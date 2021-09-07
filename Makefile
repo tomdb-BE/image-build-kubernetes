@@ -10,14 +10,9 @@ BUILD_META ?= -build$(shell date +%Y%m%d)
 ORG ?= rancher
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
-TAG ?= v1.22.1-rke2r1$(BUILD_META)
-
-ifeq ($(TAG),)
-TAG := v1.22.1-rke2r1$(BUILD_META)
-endif
+TAG ?= v1.21.4-rke2r3$(BUILD_META)
 
 GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.14b5; else echo v1.16.6b7; fi)
-
 
 .PHONY: image-build
 image-build:
