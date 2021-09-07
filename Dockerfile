@@ -1,5 +1,5 @@
-ARG UBI_IMAGE=centos:7
-ARG GO_IMAGE=rancher/hardened-build-base:v1.16.6b7
+ARG UBI_IMAGE
+ARG GO_IMAGE
 
 FROM ${UBI_IMAGE} as ubi
 FROM ${GO_IMAGE} as build

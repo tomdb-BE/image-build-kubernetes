@@ -11,6 +11,7 @@ ORG ?= rancher
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
 TAG ?= v1.21.4-rke2r3$(BUILD_META)
+UBI_IMAGE ?= centos:7
 
 GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.14b5; else echo v1.16.6b7; fi)
 
@@ -21,7 +22,8 @@ image-build:
 		--build-arg PKG=$(PKG) \
 		--build-arg SRC=$(SRC) \
 		--build-arg TAG=$(TAG) \
-		--build-arg GO_IMAGE=rancher/hardened-build-base:$(GOLANG_VERSION) \
+		--build-arg GO_IMAGE=$(ORG)/hardened-build-base:$(GOLANG_VERSION)-multiarch \
+                --build-arg UBI_IMAGE=$(UBI_IMAGE) \
 		--tag $(ORG)/hardened-kubernetes:$(TAG)-linux-$(ARCH) \
 	.
 
