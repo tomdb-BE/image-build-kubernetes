@@ -1,4 +1,4 @@
-ARG UBI_IMAGE=registry.access.redhat.com/ubi7/ubi-minimal:latest
+ARG UBI_IMAGE=centos:7
 ARG GO_IMAGE=rancher/hardened-build-base:v1.16.6b7
 
 FROM ${UBI_IMAGE} as ubi
@@ -67,6 +67,7 @@ RUN go-build-static-k8s.sh -o bin/kube-apiserver           ./cmd/kube-apiserver
 RUN go-build-static-k8s.sh -o bin/kube-controller-manager  ./cmd/kube-controller-manager
 RUN go-build-static-k8s.sh -o bin/kube-scheduler           ./cmd/kube-scheduler
 RUN go-build-static-k8s.sh -o bin/kube-proxy               ./cmd/kube-proxy
+RUN apk --no-cache add binutils-gold
 RUN go-build-static-k8s.sh -o bin/kubeadm                  ./cmd/kubeadm
 RUN go-build-static-k8s.sh -o bin/kubectl                  ./cmd/kubectl
 RUN go-build-static-k8s.sh -o bin/kubelet                  ./cmd/kubelet
@@ -76,8 +77,8 @@ RUN install -s bin/* /usr/local/bin/
 RUN kube-proxy --version
 
 FROM ubi AS kubernetes
-RUN microdnf update -y           && \
-    microdnf install which          \
+RUN yum update -y           && \
+    yum install -y which          \
     conntrack-tools              && \
     rm -rf /var/cache/yum
 

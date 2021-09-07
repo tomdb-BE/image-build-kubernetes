@@ -5,27 +5,23 @@ ifeq ($(ARCH),)
 ARCH=$(shell go env GOARCH)
 endif
 
+BUILD_META ?= -build$(shell date +%Y%m%d)
+
 ORG ?= rancher
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
-TAG ?= ${DRONE_TAG}
-
-BUILD_META := -build$(shell date +%Y%m%d)
+TAG ?= v1.22.1-rke2r1$(BUILD_META)
 
 ifeq ($(TAG),)
-TAG := v1.21.3-rke2dev$(BUILD_META)
+TAG := v1.22.1-rke2r1$(BUILD_META)
 endif
 
 GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.14b5; else echo v1.16.6b7; fi)
 
-ifeq (,$(filter %$(BUILD_META),$(TAG)))
-$(error TAG needs to end with build metadata: $(BUILD_META))
-endif
 
 .PHONY: image-build
 image-build:
 	docker build \
-		--pull \
 		--build-arg ARCH=$(ARCH) \
 		--build-arg PKG=$(PKG) \
 		--build-arg SRC=$(SRC) \
