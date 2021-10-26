@@ -13,7 +13,7 @@ SRC ?= github.com/kubernetes/kubernetes
 TAG ?= v1.21.4-rke2r3$(BUILD_META)
 UBI_IMAGE ?= centos:7
 
-GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.14b5; else echo v1.16.6b7; fi)
+GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.15b5; else echo v1.16.7b7; fi)
 
 .PHONY: image-build
 image-build:
