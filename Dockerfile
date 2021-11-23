@@ -1,5 +1,5 @@
-ARG UBI_IMAGE
-ARG GO_IMAGE
+ARG UBI_IMAGE=registry.access.redhat.com/ubi8/ubi-minimal:latest
+ARG GO_IMAGE=rancher/hardened-build-base:v1.16.10b7
 
 FROM ${UBI_IMAGE} as ubi
 FROM ${GO_IMAGE} as build
@@ -59,6 +59,7 @@ RUN chmod -v +x /usr/local/go/bin/go-*.sh
 FROM build-k8s-codegen AS build-k8s
 ARG ARCH="amd64"
 ARG K3S_ROOT_VERSION="v0.9.1"
+ARG CALICO_VERSION="v3.20.1" 
 ADD https://github.com/k3s-io/k3s-root/releases/download/${K3S_ROOT_VERSION}/k3s-root-${ARCH}.tar /opt/k3s-root/k3s-root.tar
 RUN tar xvf /opt/k3s-root/k3s-root.tar -C /opt/k3s-root --wildcards --strip-components=2 './bin/aux/*tables*'
 RUN tar xvf /opt/k3s-root/k3s-root.tar -C /opt/k3s-root './bin/ipset'
@@ -67,18 +68,29 @@ RUN go-build-static-k8s.sh -o bin/kube-apiserver           ./cmd/kube-apiserver
 RUN go-build-static-k8s.sh -o bin/kube-controller-manager  ./cmd/kube-controller-manager
 RUN go-build-static-k8s.sh -o bin/kube-scheduler           ./cmd/kube-scheduler
 RUN go-build-static-k8s.sh -o bin/kube-proxy               ./cmd/kube-proxy
-RUN apk --no-cache add binutils-gold
 RUN go-build-static-k8s.sh -o bin/kubeadm                  ./cmd/kubeadm
 RUN go-build-static-k8s.sh -o bin/kubectl                  ./cmd/kubectl
 RUN go-build-static-k8s.sh -o bin/kubelet                  ./cmd/kubelet
 RUN go-assert-static.sh bin/*
-RUN go-assert-boring.sh bin/*
+RUN if [ "${ARCH}" != "s390x" ]; then \
+      go-assert-boring.sh bin/* ; \
+    fi
 RUN install -s bin/* /usr/local/bin/
 RUN kube-proxy --version
 
-FROM ubi AS kubernetes
-RUN yum install -y which          \
-    conntrack-tools              && \
+FROM ubi AS ubi-updated
+RUN microdnf update -y
+
+FROM ubi-updated AS kubernetes
+# As ubi8 does not have conntrack-tools, install from centos8 (method used by Calico-node).
+ARG CALICO_VERSION=v3.20.1
+ADD https://raw.githubusercontent.com/projectcalico/node/${CALICO_VERSION}/centos.repo /etc/yum.repos.d/
+RUN rm /etc/yum.repos.d/ubi.repo && \
+    microdnf install --setopt=tsflags=nodocs \
+    libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue \
+    conntrack-tools \
+    which && \
+    microdnf clean all && \
     rm -rf /var/cache/yum
 
 COPY --from=build-k8s /opt/k3s-root/aux/ /usr/sbin/

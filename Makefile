@@ -10,10 +10,12 @@ BUILD_META ?= -build$(shell date +%Y%m%d)
 ORG ?= rancher
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
-TAG ?= v1.21.4-rke2r3$(BUILD_META)
-UBI_IMAGE ?= centos:7
+TAG ?= v1.22.4-rke2r1$(BUILD_META)
+K3S_ROOT_VERSION ?= v0.10.1
+UBI_IMAGE ?= registry.access.redhat.com/ubi8/ubi-minimal:latest
+CALICO_VERSION ?= v3.20.1
 
-GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.15b5; else echo v1.16.7b7; fi)
+GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.15b5; else echo v1.16.10b7; fi)
 
 .PHONY: image-build
 image-build:
@@ -22,10 +24,12 @@ image-build:
 		--build-arg PKG=$(PKG) \
 		--build-arg SRC=$(SRC) \
 		--build-arg TAG=$(TAG) \
+                --build-arg K3S_ROOT_VERSION=$(K3S_ROOT_VERSION) \
 		--build-arg GO_IMAGE=$(ORG)/hardened-build-base:$(GOLANG_VERSION)-multiarch \
                 --build-arg UBI_IMAGE=$(UBI_IMAGE) \
+                --build-arg CALICO_VERSION=$(CALICO_VERSION) \
 		--tag $(ORG)/hardened-kubernetes:$(TAG)-linux-$(ARCH) \
-	.
+		.
 
 .PHONY: all
 all:
