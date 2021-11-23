@@ -13,7 +13,6 @@ SRC ?= github.com/kubernetes/kubernetes
 TAG ?= v1.22.4-rke2r1$(BUILD_META)
 K3S_ROOT_VERSION ?= v0.10.1
 UBI_IMAGE ?= registry.access.redhat.com/ubi8/ubi-minimal:latest
-CALICO_VERSION ?= v3.20.1
 
 GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.15b5; else echo v1.16.10b7; fi)
 

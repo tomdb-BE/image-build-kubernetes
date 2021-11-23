@@ -83,8 +83,7 @@ RUN microdnf update -y
 
 FROM ubi-updated AS kubernetes
 # As ubi8 does not have conntrack-tools, install from centos8 (method used by Calico-node).
-ARG CALICO_VERSION=v3.20.1
-ADD https://raw.githubusercontent.com/projectcalico/node/${CALICO_VERSION}/centos.repo /etc/yum.repos.d/
+ADD https://raw.githubusercontent.com/projectcalico/node/master/centos.repo /etc/yum.repos.d/
 RUN rm /etc/yum.repos.d/ubi.repo && \
     microdnf install --setopt=tsflags=nodocs \
     libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue \
