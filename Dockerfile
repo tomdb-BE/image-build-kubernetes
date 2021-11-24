@@ -85,6 +85,7 @@ FROM ubi-updated AS kubernetes
 # As ubi8 does not have conntrack-tools, install from centos8 (method used by Calico-node).
 ADD https://raw.githubusercontent.com/projectcalico/node/master/centos.repo /etc/yum.repos.d/
 RUN rm /etc/yum.repos.d/ubi.repo && \
+    if [ "${ARCH}" == "arm64" ]; then sed -i 's/x86_64/aarch64/' /etc/yum.repos.d/centos.repo; fi && \
     microdnf install --setopt=tsflags=nodocs \
     libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue \
     conntrack-tools \
