@@ -14,7 +14,7 @@ TAG ?= v1.23.1-rke2r1$(BUILD_META)
 K3S_ROOT_VERSION ?= v0.10.1
 UBI_IMAGE ?= registry.access.redhat.com/ubi8/ubi-minimal:latest
 
-GOLANG_VERSION := $(shell ./scripts/golang-version.sh $(TAG))
+GOLANG_VERSION := v1.17.5b7
 
 .PHONY: image-build
 image-build:
