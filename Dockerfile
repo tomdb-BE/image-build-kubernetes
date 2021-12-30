@@ -84,14 +84,12 @@ RUN microdnf update -y
 FROM ubi-updated AS kubernetes
 ARG ARCH="amd64"
 # As ubi8 does not have conntrack-tools, install from centos8 (method used by Calico-node).
-ADD https://raw.githubusercontent.com/projectcalico/node/master/centos.repo /etc/yum.repos.d/
-RUN rm /etc/yum.repos.d/ubi.repo && \
-    if [ "${ARCH}" == "arm64" ]; then sed -i 's/x86_64/aarch64/' /etc/yum.repos.d/centos.repo; fi && \
-    microdnf install --setopt=tsflags=nodocs \
-    libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue \
-    conntrack-tools \
-    which && \
-    microdnf clean all && \
+ADD https://raw.githubusercontent.com/projectcalico/calico/master/node/centos.repo /etc/yum.repos.d/
+RUN rm /etc/yum.repos.d/ubi.repo                                                                   && \
+    if [ "${ARCH}" == "arm64" ]; then sed -i 's/x86_64/aarch64/' /etc/yum.repos.d/centos.repo; fi  && \
+    microdnf update -y                                                                             && \
+    microdnf install which                                                                            \
+    conntrack-tools                                                                                && \
     rm -rf /var/cache/yum
 
 COPY --from=build-k8s /opt/k3s-root/aux/ /usr/sbin/
