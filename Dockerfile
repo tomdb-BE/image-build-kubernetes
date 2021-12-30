@@ -1,5 +1,5 @@
 ARG UBI_IMAGE=registry.access.redhat.com/ubi8/ubi-minimal:latest
-ARG GO_IMAGE=rancher/hardened-build-base:v1.16.10b7
+ARG GO_IMAGE=rancher/hardened-build-base:v1.17.5b7
 
 FROM ${UBI_IMAGE} as ubi
 FROM ${GO_IMAGE} as build

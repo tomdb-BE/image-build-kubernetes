@@ -10,11 +10,11 @@ BUILD_META ?= -multiarch-build$(shell date +%Y%m%d)
 ORG ?= rancher
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
-TAG ?= v1.22.4-rke2r1$(BUILD_META)
+TAG ?= v1.23.1-rke2r1$(BUILD_META)
 K3S_ROOT_VERSION ?= v0.10.1
 UBI_IMAGE ?= registry.access.redhat.com/ubi8/ubi-minimal:latest
 
-GOLANG_VERSION := $(shell if echo $(TAG) | grep -qE '^v1\.(18|19|20)\.'; then echo v1.15.15b5; else echo v1.16.10b7; fi)
+GOLANG_VERSION := $(shell ./scripts/golang-version.sh $(TAG))
 
 .PHONY: image-build
 image-build:
