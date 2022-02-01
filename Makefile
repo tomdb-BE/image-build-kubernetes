@@ -10,11 +10,11 @@ BUILD_META ?= -multiarch-build$(shell date +%Y%m%d)
 ORG ?= rancher
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
-TAG ?= v1.23.1-rke2r1$(BUILD_META)
-K3S_ROOT_VERSION ?= v0.10.1
+TAG ?= v1.23.3-rke2r1$(BUILD_META)
+K3S_ROOT_VERSION ?= v0.11.0
 UBI_IMAGE ?= registry.access.redhat.com/ubi8/ubi-minimal:latest
 
-GOLANG_VERSION := v1.17.5b7
+GOLANG_VERSION := v1.17.6b7
 
 .PHONY: image-build
 image-build:
@@ -26,7 +26,6 @@ image-build:
                 --build-arg K3S_ROOT_VERSION=$(K3S_ROOT_VERSION) \
 		--build-arg GO_IMAGE=$(ORG)/hardened-build-base:$(GOLANG_VERSION)-multiarch \
                 --build-arg UBI_IMAGE=$(UBI_IMAGE) \
-                --build-arg CALICO_VERSION=$(CALICO_VERSION) \
 		--tag $(ORG)/hardened-kubernetes:$(TAG)-linux-$(ARCH) \
 		.
 
