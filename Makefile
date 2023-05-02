@@ -32,7 +32,6 @@ image-build:
 		--build-arg SRC=$(SRC) \
 		--build-arg TAG=$(TAG) \
 		--build-arg ORG=$(ORG) \
-		--build-arg GO_IMAGE=$(ORG)/hardened-build-base:$(GOLANG_VERSION) \
 		--build-arg K3S_ROOT_VERSION=$(K3S_ROOT_VERSION) \
 		--tag $(ORG)/hardened-kubernetes:$(TAG)-linux-$(ARCH) \
 		.
