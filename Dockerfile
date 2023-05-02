@@ -4,6 +4,7 @@ ARG GO_IMAGE=${ORG}/hardened-build-base:v1.20.3b1
 
 FROM ${BCI_IMAGE} as bci
 FROM ${GO_IMAGE} as build
+ARG ARCH
 RUN set -x \
     && apk --no-cache add \
     bash \
@@ -15,7 +16,8 @@ RUN set -x \
     tar \
     make \
     gcc \
-    py-pip
+    py-pip \
+    && [ "${ARCH}" == "arm64" ] && apk --no-cache add binutils-gold
 
 FROM build AS build-k8s-codegen
 ARG TAG
