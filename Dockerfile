@@ -17,7 +17,7 @@ RUN set -x \
     make \
     gcc \
     py-pip \
-    && [ "${ARCH}" == "arm64" ] && apk --no-cache add binutils-gold
+    && if [ "${ARCH}" == "arm64" ]; then apk --no-cache add binutils-gold; fi
 
 FROM build AS build-k8s-codegen
 ARG TAG
