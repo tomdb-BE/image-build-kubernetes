@@ -31,7 +31,8 @@ image-build:
 		--build-arg PKG=$(PKG) \
 		--build-arg SRC=$(SRC) \
 		--build-arg TAG=$(TAG) \
-		--build-arg GO_IMAGE=rancher/hardened-build-base:$(GOLANG_VERSION) \
+		--build-arg ORG=$(ORG) \
+		--build-arg GO_IMAGE=$(ORG)/hardened-build-base:$(GOLANG_VERSION) \
 		--build-arg K3S_ROOT_VERSION=$(K3S_ROOT_VERSION) \
 		--tag $(ORG)/hardened-kubernetes:$(TAG)-linux-$(ARCH) \
 		.
